@@ -7,7 +7,7 @@ import CENTROOESTE from '../assets/CENTROOESTE.png'
 import NORDESTE from '../assets/NORDESTE.png'
 import NORTE from '../assets/NORTE.png'
 
-const ThermometerDisplay = ({ alvo, valorAtual }) => {
+const ThermometerDisplay = ({ alvo, valorAtual, isProjectionMode = false }) => {
   const [percentage, setPercentage] = useState(0)
 
   useEffect(() => {
@@ -77,7 +77,7 @@ const ThermometerDisplay = ({ alvo, valorAtual }) => {
           <p className="text-lg text-gray-600">Minha Pátria Para Cristo 2025</p>
         </div>
 
-        <div className="flex items-center justify-center gap-8">
+        <div className="flex items-start justify-center gap-8">
           {/* Termômetro lateral */}
           {alvo && valorAtual && (
             <div className="flex flex-col items-center">
@@ -115,8 +115,10 @@ const ThermometerDisplay = ({ alvo, valorAtual }) => {
             </div>
           )}
 
-          {/* Mapa principal */}
-          <div className="relative mx-auto mb-8 max-w-3xl">
+          {/* Container principal com mapa e informações */}
+          <div className="flex gap-8 items-start">
+            {/* Mapa principal */}
+            <div className="relative mb-8 max-w-3xl">
             <div className="relative bg-white rounded-lg shadow-2xl p-4">
               {/* Mapa base vazio */}
               <img 
@@ -197,27 +199,49 @@ const ThermometerDisplay = ({ alvo, valorAtual }) => {
               })}
             </div>
 
-            <motion.div
-              className="text-6xl font-bold mt-6"
-              style={{
-                color: percentage >= 100 ? '#22c55e' :
-                       percentage >= 75 ? '#eab308' :
-                       percentage >= 50 ? '#f97316' :
-                       percentage >= 25 ? '#ef4444' : '#dc2626'
-              }}
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
-            >
-              {percentage.toFixed(1)}%
-            </motion.div>
+            {/* Valor do alvo em destaque próximo ao mapa */}
+            {alvo && (
+              <motion.div
+                className="absolute -top-6 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                <div className="text-sm font-medium">Alvo</div>
+                <div className="text-lg font-bold">
+                  R$ {parseFloat(alvo).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </div>
+              </motion.div>
+            )}
 
-            <div className="mt-4 text-lg font-semibold text-gray-700">
-              {regions.filter(region => getRegionStatus(region.order).filled).length} de {totalRegions} regiões preenchidas
-            </div>
+            {!isProjectionMode && (
+              <>
+                <motion.div
+                  className="text-6xl font-bold mt-6"
+                  style={{
+                    color: percentage >= 100 ? '#22c55e' :
+                           percentage >= 75 ? '#eab308' :
+                           percentage >= 50 ? '#f97316' :
+                           percentage >= 25 ? '#ef4444' : '#dc2626'
+                  }}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                >
+                  {percentage.toFixed(1)}%
+                </motion.div>
 
-            {/* Legenda das regiões com informações detalhadas */}
-            <div className="mt-6 grid grid-cols-5 gap-2 text-sm">
+                <div className="mt-4 text-lg font-semibold text-gray-700">
+                  {regions.filter(region => getRegionStatus(region.order).filled).length} de {totalRegions} regiões preenchidas
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Blocos de informações das regiões à direita do mapa */}
+          {alvo && valorAtual && (
+            <div className="flex flex-col gap-3 w-64">
+              {/* Ordem: Sul > Sudeste > Centro-Oeste > Nordeste > Norte */}
               {regions.map((region) => {
                 const status = getRegionStatus(region.order)
                 const isComplete = status.filled
@@ -225,38 +249,40 @@ const ThermometerDisplay = ({ alvo, valorAtual }) => {
                 const isWaiting = status.fillPercentage === 0
                 
                 return (
-                  <div
+                  <motion.div
                     key={region.name}
-                    className={`p-2 rounded transition-all duration-300 ${
+                    className={`p-4 rounded-lg transition-all duration-300 shadow-md ${
                       isComplete 
                         ? 'bg-green-100 text-green-800 border-2 border-green-300' 
                         : isPartial
                         ? 'bg-yellow-100 text-yellow-800 border-2 border-yellow-300'
                         : 'bg-gray-100 text-gray-500 border-2 border-gray-200'
                     }`}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: region.order * 0.1 }}
                   >
-                    <div className="font-semibold">{region.name}</div>
-                    <div className="text-xs mb-1">
+                    <div className="font-bold text-lg mb-2">{region.name}</div>
+                    <div className="text-sm mb-2">
                       {isComplete ? '✓ Completa' : isPartial ? `◐ ${status.fillPercentage.toFixed(0)}%` : 'Aguardando'}
                     </div>
-                    {alvo && (
-                      <div className="text-xs">
-                        <div>Meta: R$ {status.valorNecessario.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
-                        {status.valorRestante > 0 && (
-                          <div className="text-red-600 font-semibold">
-                            Falta: R$ {status.valorRestante.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                    <div className="text-sm space-y-1">
+                      <div>Meta: R$ {status.valorNecessario.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
+                      {status.valorRestante > 0 && (
+                        <div className="text-red-600 font-semibold">
+                          Falta: R$ {status.valorRestante.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
                 )
               })}
             </div>
-          </div>
+          )}
+        </div>
         </div>
 
-        {alvo && valorAtual && (
+        {alvo && valorAtual && !isProjectionMode && (
           <motion.div
             className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto mt-8"
             initial={{ opacity: 0, y: 20 }}

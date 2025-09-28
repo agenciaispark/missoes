@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button.jsx'
 import { Input } from '@/components/ui/input.jsx'
 import { Label } from '@/components/ui/label.jsx'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.jsx'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Monitor } from 'lucide-react'
 
 const Sidebar = ({ alvo, valorAtual, onAlvoChange, onValorAtualChange, isCollapsed, onToggleCollapse }) => {
   const handleAlvoChange = (e) => {
@@ -16,6 +16,33 @@ const Sidebar = ({ alvo, valorAtual, onAlvoChange, onValorAtualChange, isCollaps
     const value = e.target.value
     if (value === '' || (!isNaN(value) && parseFloat(value) >= 0)) {
       onValorAtualChange(value)
+    }
+  }
+
+  const handleProjection = () => {
+    // Criar URL com parâmetros para a projeção
+    const projectionUrl = `${window.location.origin}${window.location.pathname}?projection=true&alvo=${encodeURIComponent(alvo)}&valorAtual=${encodeURIComponent(valorAtual)}`
+    
+    // Tentar abrir em tela cheia em um segundo monitor, ou em nova janela
+    const projectionWindow = window.open(
+      projectionUrl,
+      'projection',
+      'fullscreen=yes,scrollbars=no,resizable=yes,status=no,location=no,toolbar=no,menubar=no'
+    )
+    
+    // Se conseguiu abrir a janela, tentar colocar em tela cheia
+    if (projectionWindow) {
+      projectionWindow.focus()
+      // Tentar tela cheia após um pequeno delay
+      setTimeout(() => {
+        if (projectionWindow.document && projectionWindow.document.documentElement) {
+          if (projectionWindow.document.documentElement.requestFullscreen) {
+            projectionWindow.document.documentElement.requestFullscreen().catch(() => {
+              // Falha silenciosa se não conseguir entrar em tela cheia
+            })
+          }
+        }
+      }, 1000)
     }
   }
 
@@ -76,6 +103,23 @@ const Sidebar = ({ alvo, valorAtual, onAlvoChange, onValorAtualChange, isCollaps
                 className="w-full"
               />
             </div>
+
+            {/* Botão de Projeção */}
+            {alvo && valorAtual && (
+              <div className="mt-6">
+                <Button
+                  onClick={handleProjection}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                  size="lg"
+                >
+                  <Monitor className="w-4 h-4 mr-2" />
+                  Projetar em Segunda Tela
+                </Button>
+                <p className="text-xs text-muted-foreground mt-2 text-center">
+                  Abre o termômetro em tela cheia para projeção
+                </p>
+              </div>
+            )}
 
             {/* Informações de progresso */}
             {alvo && valorAtual && (
