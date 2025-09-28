@@ -241,8 +241,8 @@ const ThermometerDisplay = ({ alvo, valorAtual, isProjectionMode = false }) => {
           {/* Blocos de informações das regiões à direita do mapa */}
           {alvo && valorAtual && (
             <div className="flex flex-col gap-3 w-64">
-              {/* Ordem: Sul > Sudeste > Centro-Oeste > Nordeste > Norte */}
-              {regions.map((region) => {
+              {/* Ordem: Sul > Sudeste > Centro-Oeste > Nordeste > Norte (de baixo para cima) */}
+              {regions.slice().reverse().map((region) => {
                 const status = getRegionStatus(region.order)
                 const isComplete = status.filled
                 const isPartial = status.fillPercentage > 0 && !status.filled
