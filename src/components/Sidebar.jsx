@@ -47,31 +47,31 @@ const Sidebar = ({ alvo, valorAtual, onAlvoChange, onValorAtualChange, isCollaps
   }
 
   return (
-    <div className={`fixed left-0 top-0 h-full bg-sidebar border-r border-sidebar-border transition-all duration-300 z-10 ${
-      isCollapsed ? 'w-12' : 'w-80'
+    <div className={`lg:fixed lg:left-0 lg:top-0 lg:h-full bg-sidebar border-r lg:border-r border-b lg:border-b-0 border-sidebar-border transition-all duration-300 z-10 ${
+      isCollapsed ? 'lg:w-12 w-full h-auto' : 'lg:w-80 w-full h-auto lg:h-full'
     }`}>
-      {/* Botão de recolher/expandir */}
+      {/* Botão de recolher/expandir (apenas em desktop) */}
       <Button
         variant="ghost"
         size="sm"
-        className="absolute -right-3 top-4 z-20 bg-background border border-border rounded-full p-1 h-6 w-6"
+        className="hidden lg:block absolute -right-3 top-4 z-20 bg-background border border-border rounded-full p-1 h-6 w-6"
         onClick={() => onToggleCollapse(!isCollapsed)}
       >
         {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
       </Button>
 
       {/* Conteúdo da sidebar */}
-      <div className={`p-4 h-full ${isCollapsed ? 'hidden' : 'block'}`}>
-        <Card className="h-full">
-          <CardHeader>
-            <CardTitle className="text-lg font-bold text-sidebar-foreground">
+      <div className={`p-2 md:p-4 h-full ${isCollapsed ? 'lg:hidden' : 'block'}`}>
+        <Card className="h-full lg:h-full h-auto">
+          <CardHeader className="pb-2 md:pb-6">
+            <CardTitle className="text-base md:text-lg font-bold text-sidebar-foreground">
               Termômetro Missionário
             </CardTitle>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs md:text-sm text-muted-foreground">
               Configure os valores da campanha
             </p>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-3 md:space-y-6">
             <div className="space-y-2">
               <Label htmlFor="alvo" className="text-sm font-medium">
                 Alvo da Campanha (R$)

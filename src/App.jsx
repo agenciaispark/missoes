@@ -37,7 +37,7 @@ function App() {
   }
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex flex-col lg:flex-row h-screen bg-background">
       <Sidebar
         alvo={alvo}
         valorAtual={valorAtual}
@@ -46,7 +46,7 @@ function App() {
         isCollapsed={sidebarCollapsed}
         onToggleCollapse={setSidebarCollapsed}
       />
-      <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'ml-12' : 'ml-80'}`}>
+      <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-12' : 'lg:ml-80'}`}>
         <ThermometerDisplay
           alvo={alvo}
           valorAtual={valorAtual}

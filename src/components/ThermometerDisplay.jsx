@@ -70,18 +70,18 @@ const ThermometerDisplay = ({ alvo, valorAtual, isProjectionMode = false }) => {
   }
 
   return (
-    <div className="flex-1 flex items-center justify-center min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100 p-8">
-      <div className="text-center max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Termômetro Missionário</h1>
-          <p className="text-lg text-gray-600">Minha Pátria Para Cristo 2025</p>
+    <div className="flex-1 flex items-center justify-center min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100 p-4 md:p-8">
+      <div className="text-center max-w-7xl mx-auto w-full">
+        <div className="mb-4 md:mb-8">
+          <h1 className="text-2xl md:text-4xl font-bold text-gray-800 mb-2">Termômetro Missionário</h1>
+          <p className="text-sm md:text-lg text-gray-600">Minha Pátria Para Cristo 2025</p>
         </div>
 
-        <div className="flex items-start justify-center gap-8">
+        <div className="flex flex-col lg:flex-row items-start justify-center gap-4 lg:gap-8">
           {/* Termômetro lateral */}
           {alvo && valorAtual && (
-            <div className="flex flex-col items-center">
-              <div className="relative w-16 h-80 bg-gray-200 rounded-full overflow-hidden shadow-lg">
+            <div className="flex flex-col items-center order-2 lg:order-1">
+              <div className="relative w-12 h-60 md:w-16 md:h-80 bg-gray-200 rounded-full overflow-hidden shadow-lg">
                 <motion.div
                   className="absolute bottom-0 left-0 w-full rounded-full"
                   style={{
@@ -116,10 +116,10 @@ const ThermometerDisplay = ({ alvo, valorAtual, isProjectionMode = false }) => {
           )}
 
           {/* Container principal com mapa e informações */}
-          <div className="flex gap-8 items-start">
+          <div className="flex flex-col xl:flex-row gap-4 xl:gap-8 items-start order-1 lg:order-2 w-full">
             {/* Mapa principal */}
-            <div className="relative mb-8 max-w-3xl">
-            <div className="relative bg-white rounded-lg shadow-2xl p-4">
+            <div className="relative mb-4 xl:mb-8 max-w-3xl mx-auto xl:mx-0 flex-1">
+            <div className="relative bg-white rounded-lg shadow-2xl p-2 md:p-4">
               {/* Mapa base vazio */}
               <img 
                 src={MAPAVAZIO} 
@@ -197,27 +197,27 @@ const ThermometerDisplay = ({ alvo, valorAtual, isProjectionMode = false }) => {
                   </div>
                 )
               })}
+                  {/* Destaque do valor do alvo */}
+              {alvo && !isProjectionMode && (
+                <motion.div
+                  className="absolute top-2 right-2 md:top-4 md:right-4 bg-blue-600 text-white px-2 py-1 md:px-4 md:py-2 rounded-lg shadow-lg"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                >
+                  <div className="text-xs md:text-sm font-medium">Alvo</div>
+                  <div className="text-sm md:text-lg font-bold">
+                    R$ {parseFloat(alvo).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </div>
+                </motion.div>
+              )}
             </div>
 
-            {/* Valor do alvo em destaque próximo ao mapa */}
-            {alvo && (
-              <motion.div
-                className="absolute -top-6 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                <div className="text-sm font-medium">Alvo</div>
-                <div className="text-lg font-bold">
-                  R$ {parseFloat(alvo).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                </div>
-              </motion.div>
-            )}
-
+            {/* Percentual e informações gerais (apenas no modo normal) */}
             {!isProjectionMode && (
               <>
                 <motion.div
-                  className="text-6xl font-bold mt-6"
+                  className="text-4xl md:text-6xl font-bold mt-4 md:mt-6"
                   style={{
                     color: percentage >= 100 ? '#22c55e' :
                            percentage >= 75 ? '#eab308' :
@@ -240,7 +240,7 @@ const ThermometerDisplay = ({ alvo, valorAtual, isProjectionMode = false }) => {
 
           {/* Blocos de informações das regiões à direita do mapa */}
           {alvo && valorAtual && (
-            <div className="flex flex-col gap-3 w-64">
+            <div className="flex flex-col gap-2 md:gap-3 w-full xl:w-64 xl:flex-shrink-0">
               {/* Ordem: Sul > Sudeste > Centro-Oeste > Nordeste > Norte (de baixo para cima) */}
               {regions.slice().reverse().map((region) => {
                 const status = getRegionStatus(region.order)
@@ -251,7 +251,7 @@ const ThermometerDisplay = ({ alvo, valorAtual, isProjectionMode = false }) => {
                 return (
                   <motion.div
                     key={region.name}
-                    className={`p-4 rounded-lg transition-all duration-300 shadow-md ${
+                    className={`p-3 md:p-4 rounded-lg transition-all duration-300 shadow-md ${
                       isComplete 
                         ? 'bg-green-100 text-green-800 border-2 border-green-300' 
                         : isPartial
@@ -262,11 +262,11 @@ const ThermometerDisplay = ({ alvo, valorAtual, isProjectionMode = false }) => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: region.order * 0.1 }}
                   >
-                    <div className="font-bold text-lg mb-2">{region.name}</div>
-                    <div className="text-sm mb-2">
+                    <div className="font-bold text-base md:text-lg mb-1 md:mb-2">{region.name}</div>
+                    <div className="text-xs md:text-sm mb-1 md:mb-2">
                       {isComplete ? '✓ Completa' : isPartial ? `◐ ${status.fillPercentage.toFixed(0)}%` : 'Aguardando'}
                     </div>
-                    <div className="text-sm space-y-1">
+                    <div className="text-xs md:text-sm space-y-1">
                       <div>Meta: R$ {status.valorNecessario.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
                       {status.valorRestante > 0 && (
                         <div className="text-red-600 font-semibold">
@@ -284,7 +284,7 @@ const ThermometerDisplay = ({ alvo, valorAtual, isProjectionMode = false }) => {
 
         {alvo && valorAtual && !isProjectionMode && (
           <motion.div
-            className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto mt-8"
+            className="bg-white rounded-lg shadow-lg p-4 md:p-6 max-w-md mx-auto mt-4 md:mt-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.7 }}
