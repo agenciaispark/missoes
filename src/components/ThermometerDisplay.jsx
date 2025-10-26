@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Confetti from 'react-confetti'
 import { motion } from 'framer-motion'
 import MAPAVAZIO from '../assets/MAPAVAZIO.png'
 import SUL from '../assets/SUL.png'
@@ -8,7 +9,21 @@ import NORDESTE from '../assets/NORDESTE.png'
 import NORTE from '../assets/NORTE.png'
 
 const ThermometerDisplay = ({ alvo, valorAtual, isProjectionMode = false }) => {
+  const [windowDimension, setWindowDimension] = useState({ width: window.innerWidth, height: window.innerHeight })
+  const [showConfetti, setShowConfetti] = useState(false)
   const [percentage, setPercentage] = useState(0)
+
+
+  const detectSize = () => {
+    setWindowDimension({ width: window.innerWidth, height: window.innerHeight })
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', detectSize)
+    return () => {
+      window.removeEventListener('resize', detectSize)
+    }
+  }, [])
 
   useEffect(() => {
     if (alvo && valorAtual) {
@@ -17,7 +32,15 @@ const ThermometerDisplay = ({ alvo, valorAtual, isProjectionMode = false }) => {
     } else {
       setPercentage(0)
     }
-  }, [alvo, valorAtual])
+
+    if (isProjectionMode) {
+      if (alvo && valorAtual && parseFloat(valorAtual) >= parseFloat(alvo)) {
+        setShowConfetti(true)
+      } else {
+        setShowConfetti(false)
+      }
+    }
+  }, [alvo, valorAtual, isProjectionMode])
 
   // Ordem de preenchimento: Sul > Sudeste > Centro-Oeste > Nordeste > Norte
   const regions = [
@@ -71,6 +94,15 @@ const ThermometerDisplay = ({ alvo, valorAtual, isProjectionMode = false }) => {
 
   return (
     <div className="flex-1 flex items-center justify-center min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100 p-4 md:p-8">
+      {isProjectionMode && showConfetti && (
+        <Confetti
+          width={windowDimension.width}
+          height={windowDimension.height}
+          recycle={false}
+          numberOfPieces={500}
+          tweenDuration={10000}
+        />
+      )}
       <div className="text-center max-w-7xl mx-auto w-full">
         <div className="mb-4 md:mb-8">
           <h1 className="text-2xl md:text-4xl font-bold text-gray-800 mb-2">Termômetro Missionário</h1>
@@ -197,7 +229,22 @@ const ThermometerDisplay = ({ alvo, valorAtual, isProjectionMode = false }) => {
                   </div>
                 )
               })}
-                  {/* Destaque do valor do alvo */}
+                  {/* Destaque do valor atual (apenas no modo de projeção) */}
+              {valorAtual && isProjectionMode && (
+                <motion.div
+                  className="absolute top-2 right-2 md:top-4 md:right-4 bg-green-600 text-white px-2 py-1 md:px-4 md:py-2 rounded-lg shadow-lg"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                >
+                  <div className="text-xs md:text-sm font-medium">Atual</div>
+                  <div className="text-sm md:text-lg font-bold">
+                    R$ {parseFloat(valorAtual).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Destaque do valor do alvo (apenas no modo normal) */}
               {alvo && !isProjectionMode && (
                 <motion.div
                   className="absolute top-2 right-2 md:top-4 md:right-4 bg-blue-600 text-white px-2 py-1 md:px-4 md:py-2 rounded-lg shadow-lg"
