@@ -27,7 +27,7 @@ const ThermometerDisplay = ({ alvo, valorAtual, isProjectionMode = false }) => {
 
   useEffect(() => {
     if (alvo && valorAtual) {
-      const newPercentage = Math.min((parseFloat(valorAtual) / parseFloat(alvo)) * 100, 100)
+      const newPercentage = (parseFloat(valorAtual) / parseFloat(alvo)) * 100
       setPercentage(newPercentage)
     } else {
       setPercentage(0)
@@ -123,7 +123,7 @@ const ThermometerDisplay = ({ alvo, valorAtual, isProjectionMode = false }) => {
                                percentage >= 25 ? '#ef4444' : '#dc2626'
                   }}
                   initial={{ height: '0%' }}
-                  animate={{ height: `${percentage}%` }}
+                  animate={{ height: `${Math.min(percentage, 100)}%` }}
                   transition={{ duration: 1.5, ease: 'easeOut' }}
                 />
                 {/* Marcações do termômetro */}
