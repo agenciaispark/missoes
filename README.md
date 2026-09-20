@@ -6,12 +6,12 @@ O Termômetro Missionário é uma aplicação web interativa desenvolvida para v
 
 ## Funcionalidades
 
-*   **Visualização de Progresso:** Acompanhamento visual do progresso da campanha através de um mapa interativo do Brasil e um termômetro lateral.
-*   **Definição de Alvo e Valor Atual:** Campos de entrada na barra lateral para configurar o valor total da campanha (Alvo) e o valor já arrecadado/atingido (Valor Atual).
-*   **Informações Detalhadas por Região:** Blocos de informação exibidos à direita do mapa, detalhando o status de cada região (Sul, Sudeste, Centro-Oeste, Nordeste, Norte), incluindo o valor necessário, o percentual de preenchimento e o valor restante.
-*   **Destaque do Valor do Alvo:** O valor do alvo é exibido em destaque próximo ao mapa para fácil visualização.
-*   **Modo de Projeção:** Um botão "Projetar em Segunda Tela" na barra lateral permite abrir uma nova janela (ou tentar tela cheia em um segundo monitor) com uma versão simplificada da interface, ideal para projeções em eventos ou reuniões. Neste modo, informações adicionais como o percentual geral e o card de detalhes financeiros são ocultadas para focar na visualização principal.
-*   **Interface Responsiva:** Desenvolvido com Tailwind CSS e componentes Radix UI para uma experiência de usuário moderna e adaptável.
+*   **Mapa do Brasil que enche:** as 5 regiões (Sul → Sudeste → Centro-Oeste → Nordeste → Norte) são preenchidas de baixo pra cima conforme o valor arrecadado se aproxima do alvo, com um termômetro lateral e o percentual em destaque.
+*   **Alvo e Valor Arrecadado:** campos simples na barra lateral. Sem banco de dados — cada sessão é carregada na hora.
+*   **Imagem de preenchimento (opcional):** envie uma imagem (arte da campanha, foto) e ela é revelada através do formato do Brasil. Sem imagem, o mapa usa o laranja da marca.
+*   **Projeção na 2ª tela, ao vivo:** o botão "Projetar em 2ª tela" abre uma janela separada (arraste para o telão e dê F11). O que você digita na tela de controle **atualiza a projeção na hora** — sincronização feita 100% no navegador (`BroadcastChannel` + `localStorage`), sem servidor.
+*   **Confete ao bater o alvo:** quando o arrecadado atinge o alvo, a projeção mostra "Alvo alcançado!" com confete.
+*   **Interface Responsiva:** Tailwind CSS + componentes Radix UI + animações com Framer Motion.
 
 ## Tecnologias Utilizadas
 
@@ -48,7 +48,7 @@ Para configurar e executar o projeto em sua máquina local, siga os passos abaix
 
 ## Uso da Aplicação
 
-1.  **Configurar Valores:** Na barra lateral esquerda, insira o **Alvo da Campanha (R$)** e o **Valor Atual (R$)**.
-2.  **Visualizar Progresso:** O mapa do Brasil e o termômetro lateral se atualizarão dinamicamente para refletir o progresso.
-3.  **Detalhes por Região:** Observe os blocos à direita do mapa para ver o status individual de cada região.
-4.  **Modo de Projeção:** Clique no botão "Projetar em Segunda Tela" na barra lateral para abrir a visualização otimizada para projeção em uma nova janela.
+1.  **Informe os valores:** na barra lateral, digite o **Alvo Missionário (R$)** e o **Valor Arrecadado (R$)**. Opcionalmente, envie uma **imagem** para preencher o mapa.
+2.  **Projete no telão:** clique em **"Projetar em 2ª tela"**, arraste a janela para o segundo monitor e dê **F11** (tela cheia).
+3.  **Atualize ao vivo:** volte para a tela de controle e vá alterando o **Valor Arrecadado** — a projeção enche o mapa na hora, sem recarregar.
+4.  **Bateu o alvo:** ao atingir 100%, a projeção celebra com **confete**.
